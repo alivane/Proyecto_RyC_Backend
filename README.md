@@ -4,7 +4,7 @@ Proyecto RyC backend con flask
 ### INSTALL VIRTUAL ENV
 ```bash
 /usr/bin/python3.7 -m pip install virtualenv
-virtualenv venv
+virtualenv venv --python=3.7
 ```
 
 ### ACTIVE ENVIROMENT
