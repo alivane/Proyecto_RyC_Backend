@@ -29,3 +29,17 @@ flask run
 ```bash
 source activate
 ```
+
+### Flask Migrate
+```bash
+flask db init
+
+## For version update
+flask db migrate
+
+## Version upgrade
+flask db upgrade
+
+## Version before
+flask db downgrade
+```
