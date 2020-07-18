@@ -20,9 +20,9 @@ def register_blueprints(app):
 
 
 def register_error_handler(app):
-    @app.errorhanfler(marshmallow.execptions.ValidationError)
-    def validataion_error_handler(e):
-        return jsonify(validatetion_error.messages), 400
+    @app.errorhandler(marshmallow.exceptions.ValidationError)
+    def validation_error_handler(e):
+        return jsonify(e.messages), 400
 
 
 def create_app():
@@ -33,6 +33,7 @@ def create_app():
     ma.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+    register_error_handler(app)
     register_blueprints(app)
 
     return app
