@@ -2,9 +2,10 @@ from datetime import datetime
 import jwt
 from functools import wraps
 from flask import request, jsonify, Blueprint, current_app
-from projects import db
+from projects import db, bcrypt
 from projects.models import Users
 from projects.schemas import user_schema
+import marshmallow
 
 
 blueprint = Blueprint('users', __name__)
@@ -51,7 +52,7 @@ def register():
     user = user_schema.load(request.json)
 
     db.session.add(user)
-    db.commit()
+    db.session.commit()
 
     return user_schema.dump(user), 201
 
@@ -122,13 +123,18 @@ def delete_user(payload, id):
 def login():
     data = request.get_json()
 
-    mail = data['mail']
-    password = data['password']
+    mail = data.get('mail')
+    password = data.get('password')
 
-    user = Users.query.filter_by(mail=mail, password=password).firts()
+    user = Users.query.filter_by(mail=mail).first()
 
     if user is None:
         return 'Not found', 404
+
+
+    if bcrypt.check_password_hash(user.password, password) is False:
+        return 'Not Found', 404
+
 
     payload = {
         'sub': user.id,
