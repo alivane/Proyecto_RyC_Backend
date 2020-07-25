@@ -12,7 +12,7 @@ blueprint = Blueprint('users', __name__)
 
 
 def check_token():
-    authorization = request.headers.get('Authorizaration')
+    authorization = request.headers.get('Authorization')
 
     if authorization is None:
         return False
