@@ -28,8 +28,8 @@ def check_token():
     token = split_auth[1]
 
     try:
-        jwt.decode(token, current_app.config['SECRET'])
-        return True
+        token = jwt.decode(token, current_app.config['SECRET'])
+        return token
     except:
         return False
 
@@ -122,7 +122,6 @@ def delete_user(payload, id):
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     data = request.get_json()
-
     mail = data.get('mail')
     password = data.get('password')
 
@@ -135,7 +134,6 @@ def login():
     if bcrypt.check_password_hash(user.password, password) is False:
         return 'Not Found', 404
 
-
     payload = {
         'sub': user.id,
         'name': user.name,
@@ -147,3 +145,11 @@ def login():
         current_app.config['SECRET'],
         algorithm='HS256'
     )
+
+@blueprint.route('/token', methods=['GET'])
+@authentificater
+def user(payload):
+    user = Users.query.get_or_404(payload['sub'])
+    
+    return user_schema.dump(user), 200
+    
